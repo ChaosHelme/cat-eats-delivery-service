@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\CatEats.Gateway\CatEats.Gateway.csproj" />
       <ProjectReference Include="..\CatEats.ServiceDefaults\CatEats.ServiceDefaults.csproj" />
         <ProjectReference Include="..\CatEats.UserService.Api\CatEats.UserService.Api.csproj" />
     </ItemGroup>
