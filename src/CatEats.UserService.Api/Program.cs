@@ -39,6 +39,7 @@ partial class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddDistributedMemoryCache();
 
         // Add health checks
         builder.Services.AddHealthChecks()

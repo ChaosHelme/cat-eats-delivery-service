@@ -38,35 +38,35 @@ var userService = builder.AddProject<Projects.CatEats_UserService_Api>("user-ser
     .WithReference(rabbitmq)
     .WithEnvironment("ASPNETCORE_ENVIRONMENT", builder.Environment.EnvironmentName);
 
-var restaurantService = builder.AddProject<Projects.CatEats_RestaurantService>("restaurant-service")
-    .WithReference(restaurantDb)
-    .WithReference(redis)
-    .WithReference(rabbitmq)
-    .WithEnvironment("ASPNETCORE_ENVIRONMENT", builder.Environment.EnvironmentName);
-
-var orderService = builder.AddProject<Projects.CatEats_OrderService>("order-service")
-    .WithReference(orderDb)
-    .WithReference(redis)
-    .WithReference(rabbitmq)
-    .WithEnvironment("ASPNETCORE_ENVIRONMENT", builder.Environment.EnvironmentName);
-
-var deliveryService = builder.AddProject<Projects.CatEats_DeliveryService>("delivery-service")
-    .WithReference(deliveryDb)
-    .WithReference(locationDb)
-    .WithReference(redis)
-    .WithReference(rabbitmq)
-    .WithEnvironment("ASPNETCORE_ENVIRONMENT", builder.Environment.EnvironmentName);
-
-var notificationService = builder.AddProject<Projects.CatEats_NotificationService>("notification-service")
-    .WithReference(redis)
-    .WithReference(rabbitmq)
-    .WithEnvironment("ASPNETCORE_ENVIRONMENT", builder.Environment.EnvironmentName);
+// var restaurantService = builder.AddProject<Projects.CatEats_RestaurantService>("restaurant-service")
+//     .WithReference(restaurantDb)
+//     .WithReference(redis)
+//     .WithReference(rabbitmq)
+//     .WithEnvironment("ASPNETCORE_ENVIRONMENT", builder.Environment.EnvironmentName);
+//
+// var orderService = builder.AddProject<Projects.CatEats_OrderService>("order-service")
+//     .WithReference(orderDb)
+//     .WithReference(redis)
+//     .WithReference(rabbitmq)
+//     .WithEnvironment("ASPNETCORE_ENVIRONMENT", builder.Environment.EnvironmentName);
+//
+// var deliveryService = builder.AddProject<Projects.CatEats_DeliveryService>("delivery-service")
+//     .WithReference(deliveryDb)
+//     .WithReference(locationDb)
+//     .WithReference(redis)
+//     .WithReference(rabbitmq)
+//     .WithEnvironment("ASPNETCORE_ENVIRONMENT", builder.Environment.EnvironmentName);
+//
+// var notificationService = builder.AddProject<Projects.CatEats_NotificationService>("notification-service")
+//     .WithReference(redis)
+//     .WithReference(rabbitmq)
+//     .WithEnvironment("ASPNETCORE_ENVIRONMENT", builder.Environment.EnvironmentName);
 
 // Gateway references to services
-gateway.WithReference(userService)
-       .WithReference(restaurantService)
-       .WithReference(orderService)
-       .WithReference(deliveryService);
+gateway.WithReference(userService);
+       // .WithReference(restaurantService)
+       // .WithReference(orderService)
+       // .WithReference(deliveryService);
 
 // Observability
 if (builder.Environment.IsDevelopment())
@@ -75,10 +75,10 @@ if (builder.Environment.IsDevelopment())
     var seq = builder.AddSeq("seq");
     
     userService.WithReference(seq);
-    restaurantService.WithReference(seq);
-    orderService.WithReference(seq);
-    deliveryService.WithReference(seq);
-    notificationService.WithReference(seq);
+    // restaurantService.WithReference(seq);
+    // orderService.WithReference(seq);
+    // deliveryService.WithReference(seq);
+    // notificationService.WithReference(seq);
     gateway.WithReference(seq);
 }
 

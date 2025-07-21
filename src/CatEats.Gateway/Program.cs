@@ -35,7 +35,14 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("rider-or-admin", policy =>
+        policy.RequireAuthenticatedUser());
+
+    options.AddPolicy("authenticated", policy =>
+        policy.RequireAuthenticatedUser());
+});
 
 // Add Rate Limiting
 builder.Services.AddRateLimiter(options =>
