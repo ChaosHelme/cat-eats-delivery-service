@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Sdk Name="Aspire.AppHost.Sdk" Version="9.3.1"/>
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <UserSecretsId>542a29b5-45c6-42f9-868c-a04bfda27e03</UserSecretsId>
+        <IsAspireHost>true</IsAspireHost>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.1"/>
+        <PackageReference Include="Aspire.Hosting.MongoDB" Version="9.3.1" />
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.3.1" />
+        <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="9.3.1" />
+        <PackageReference Include="Aspire.Hosting.Redis" Version="9.3.1" />
+        <PackageReference Include="Aspire.Hosting.Seq" Version="9.3.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CatEats.ServiceDefaults\CatEats.ServiceDefaults.csproj" />
+        <ProjectReference Include="..\CatEats.UserService.Api\CatEats.UserService.Api.csproj" />
+    </ItemGroup>
+
+</Project>
