@@ -1,9 +1,9 @@
 using CatEats.Domain.Common;
-using CatEats.Domain.DomainEvents;
-using CatEats.Domain.Enumerations;
 using CatEats.Domain.ValueObjects;
+using CatEats.UserService.Domain.DomainEvents;
+using CatEats.UserService.Domain.Enumerations;
 
-namespace CatEats.Domain.AggregateRoots;
+namespace CatEats.UserService.Domain.Aggregates;
 
 public record User : AggregateRoot<UserId>
 {

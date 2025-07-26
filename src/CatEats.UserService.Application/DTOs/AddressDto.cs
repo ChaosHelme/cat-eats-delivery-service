@@ -2,7 +2,7 @@ using CatEats.Domain.ValueObjects;
 
 namespace CatEats.UserService.Application.DTOs;
 
-public class AddressDto
+public record AddressDto
 {
     public string Street { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;

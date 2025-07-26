@@ -1,6 +1,5 @@
 using CatEats.UserService.Application;
 using CatEats.UserService.Infrastructure;
-using FoodDelivery.UserService.Application;
 using MassTransit;
 
 namespace CatEats.UserService.Api;
@@ -17,8 +16,8 @@ partial class Program
         builder.AddNpgsqlDbContext<UserDbContext>("userdb");
 
         // Add repositories
-        builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+        builder.Services.AddScoped<IUserRepository, UserEfCoreRepository>();
+        
         // Add application services
         builder.Services.AddScoped<IUserApplicationService, UserApplicationService>();
 
@@ -32,6 +31,13 @@ partial class Program
             });
         });
 
+        builder.Services.AddMediator(cfg =>
+        {
+            cfg.AddConsumers(typeof(UserApplicationService).Assembly);
+        });
+        
+        builder.Services.AddAutoMapper(_ => {}, typeof(UserApplicationService).Assembly);
+
         // Add Redis caching
         builder.AddRedisClient("redis");
 
@@ -39,7 +45,10 @@ partial class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-        builder.Services.AddDistributedMemoryCache();
+        builder.Services.AddStackExchangeRedisCache(cfg =>
+        {
+            cfg.Configuration = builder.Configuration.GetConnectionString("redis");
+        });
 
         // Add health checks
         builder.Services.AddHealthChecks()

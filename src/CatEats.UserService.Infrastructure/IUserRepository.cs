@@ -1,7 +1,7 @@
-using CatEats.Domain.AggregateRoots;
 using CatEats.Domain.ValueObjects;
+using CatEats.UserService.Domain.Aggregates;
 
-namespace CatEats.UserService.Application;
+namespace CatEats.UserService.Infrastructure;
 
 public interface IUserRepository
 {

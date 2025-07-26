@@ -1,9 +1,6 @@
+using CatEats.UserService.Application.DTOs;
+using Mediator;
+
 namespace CatEats.UserService.Application.Commands;
 
-public class RegisterRiderCommand
-{
-    public string Email { get; set; } = string.Empty;
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-    public string PhoneNumber { get; set; } = string.Empty;
-}
+public record RegisterRiderCommand(string Email, string FirstName, string LastName, string PhoneNumber) : ICommand<UserDto>;

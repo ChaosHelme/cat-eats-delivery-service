@@ -1,8 +1,8 @@
 using CatEats.Domain.Common;
-using CatEats.Domain.Enumerations;
 using CatEats.Domain.ValueObjects;
+using CatEats.UserService.Domain.Enumerations;
 
-namespace CatEats.Domain.DomainEvents;
+namespace CatEats.UserService.Domain.DomainEvents;
 
 public record UserRegisteredEvent(UserId UserId, string Email, UserRole Role) : IDomainEvent;
 public record AddressAddedEvent(UserId UserId, Address Address) : IDomainEvent;

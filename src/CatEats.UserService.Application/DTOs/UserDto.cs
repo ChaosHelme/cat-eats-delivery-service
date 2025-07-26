@@ -1,20 +1,20 @@
-using CatEats.Domain.AggregateRoots;
-using CatEats.Domain.Enumerations;
+using CatEats.UserService.Domain.Aggregates;
+using CatEats.UserService.Domain.Enumerations;
 
 namespace CatEats.UserService.Application.DTOs;
 
-public class UserDto
+public record UserDto
 {
-    public Guid Id { get; set; }
-    public string Email { get; set; } = string.Empty;
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-    public string PhoneNumber { get; set; } = string.Empty;
-    public UserRole Role { get; set; }
-    public UserStatus Status { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime? LastLoginAt { get; set; }
-    public List<AddressDto> Addresses { get; set; } = new();
+    public Guid Id { get; init; }
+    public string Email { get; init; } = string.Empty;
+    public string FirstName { get; init; } = string.Empty;
+    public string LastName { get; init; } = string.Empty;
+    public string PhoneNumber { get; init; } = string.Empty;
+    public UserRole Role { get; init; }
+    public UserStatus Status { get; init; }
+    public DateTime CreatedAt { get; init; }
+    public DateTime? LastLoginAt { get; init; }
+    public List<AddressDto> Addresses { get; init; } = [];
 
     public static UserDto FromDomain(User user)
     {

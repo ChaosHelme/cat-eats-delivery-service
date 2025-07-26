@@ -7,12 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="15.0.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.7" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CatEats.UserService.Application\CatEats.UserService.Application.csproj" />
+      <ProjectReference Include="..\CatEats.UserService.Domain\CatEats.UserService.Domain.csproj" />
     </ItemGroup>
 
 </Project>

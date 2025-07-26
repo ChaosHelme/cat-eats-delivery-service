@@ -1,4 +1,4 @@
-namespace CatEats.Domain.Enumerations;
+namespace CatEats.UserService.Domain.Enumerations;
 
 public enum UserStatus
 {

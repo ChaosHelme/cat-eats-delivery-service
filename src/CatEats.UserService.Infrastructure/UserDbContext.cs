@@ -1,21 +1,19 @@
-using CatEats.Domain.AggregateRoots;
 using CatEats.Domain.ValueObjects;
+using CatEats.UserService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatEats.UserService.Infrastructure;
 
-public class UserDbContext : DbContext
+public class UserDbContext(DbContextOptions<UserDbContext> options) : DbContext(options)
 {
-    public UserDbContext(DbContextOptions<UserDbContext> options) : base(options) { }
-
-    public DbSet<User> Users => Set<User>();
+    public DbSet<UserEntity> Users => Set<UserEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         // User configuration
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<UserEntity>(entity =>
         {
             entity.ToTable("users");
             
@@ -85,9 +83,6 @@ public class UserDbContext : DbContext
                 address.Property(a => a.IsDefault)
                     .IsRequired();
             });
-
-            // Ignore domain events for EF
-            entity.Ignore(u => u.DomainEvents);
         });
     }
 }

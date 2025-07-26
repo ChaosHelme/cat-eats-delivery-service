@@ -2,24 +2,17 @@ using System.Text;
 
 namespace CatEats.Gateway.Middlewares;
 
-public class RequestResponseLoggingMiddleware : IMiddleware
+public class RequestResponseLoggingMiddleware(ILogger<RequestResponseLoggingMiddleware> logger) : IMiddleware
 {
-    private readonly ILogger<RequestResponseLoggingMiddleware> _logger;
-
-    public RequestResponseLoggingMiddleware(ILogger<RequestResponseLoggingMiddleware> logger)
-    {
-        _logger = logger;
-    }
-
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        if (_logger.IsEnabled(LogLevel.Debug))
+        if (logger.IsEnabled(LogLevel.Debug))
         {
             // Log request details
             await LogRequest(context);
         }
 
-        if (_logger.IsEnabled(LogLevel.Debug))
+        if (logger.IsEnabled(LogLevel.Debug))
         {
             // Capture response
             var originalBodyStream = context.Response.Body;
@@ -57,7 +50,7 @@ public class RequestResponseLoggingMiddleware : IMiddleware
             request.Body.Position = 0; // Reset for downstream processing
         }
 
-        _logger.LogDebug("Gateway Request Details:\n{RequestLog}", requestLog.ToString());
+        logger.LogDebug("Gateway Request Details:\n{RequestLog}", requestLog.ToString());
     }
 
     private async Task LogResponse(HttpContext context, MemoryStream responseBody, Stream originalBodyStream)
@@ -75,7 +68,7 @@ public class RequestResponseLoggingMiddleware : IMiddleware
             responseLog.AppendLine($"Body: {responseText}");
         }
 
-        _logger.LogDebug("Gateway Response Details:\n{ResponseLog}", responseLog.ToString());
+        logger.LogDebug("Gateway Response Details:\n{ResponseLog}", responseLog.ToString());
 
         await responseBody.CopyToAsync(originalBodyStream);
     }

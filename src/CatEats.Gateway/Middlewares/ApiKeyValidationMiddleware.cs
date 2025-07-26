@@ -1,16 +1,8 @@
 namespace CatEats.Gateway.Middlewares;
 
-public class ApiKeyValidationMiddleware : IMiddleware
+public class ApiKeyValidationMiddleware(IConfiguration configuration, ILogger<ApiKeyValidationMiddleware> logger)
+    : IMiddleware
 {
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<ApiKeyValidationMiddleware> _logger;
-
-    public ApiKeyValidationMiddleware(IConfiguration configuration, ILogger<ApiKeyValidationMiddleware> logger)
-    {
-        _configuration = configuration;
-        _logger = logger;
-    }
-
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         // Skip API key validation for health checks and auth endpoints
@@ -34,10 +26,10 @@ public class ApiKeyValidationMiddleware : IMiddleware
         }
         else
         {
-            var validApiKeys = _configuration.GetSection("ApiKeys").Get<string[]>() ?? [];
+            var validApiKeys = configuration.GetSection("ApiKeys").Get<string[]>() ?? [];
             if (!Array.Exists(validApiKeys, element => element == extractedApiKey))
             {
-                _logger.LogWarning("Invalid API Key attempted: {ApiKey} from {RemoteIp}", 
+                logger.LogWarning("Invalid API Key attempted: {ApiKey} from {RemoteIp}", 
                     extractedApiKey, context.Connection.RemoteIpAddress);
                 
                 context.Response.StatusCode = 401;
@@ -45,7 +37,7 @@ public class ApiKeyValidationMiddleware : IMiddleware
                 return;
             }
 
-            _logger.LogDebug("Valid API Key used: {ApiKey}", extractedApiKey);
+            logger.LogDebug("Valid API Key used: {ApiKey}", extractedApiKey);
         }
 
         await next(context);

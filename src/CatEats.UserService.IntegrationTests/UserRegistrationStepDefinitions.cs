@@ -9,44 +9,32 @@ using Reqnroll;
 namespace CatEats.UserService.IntegrationTests;
 
 [Binding]
-public class UserRegistrationStepDefinitions
+public class UserRegistrationStepDefinitions(TestContext testContext)
 {
-    private readonly TestContext _testContext;
     private RegisterCustomerCommand? _customerCommand;
     private RegisterRiderCommand? _riderCommand;
     private HttpResponseMessage? _response;
     private UserDto? _registeredUser;
 
-    public UserRegistrationStepDefinitions(TestContext testContext)
-    {
-        _testContext = testContext;
-    }
-
     [Given(@"the user service is running")]
     public void GivenTheUserServiceIsRunning()
     {
         // The test context handles service startup
-        _testContext.HttpClient.Should().NotBeNull();
+        testContext.HttpClient.Should().NotBeNull();
     }
 
     [Given(@"the database is clean")]
     public async Task GivenTheDatabaseIsClean()
     {
-        await _testContext.ResetDatabaseAsync();
+        await testContext.ResetDatabaseAsync();
     }
 
     [Given(@"a customer exists with email ""(.*)""")]
     public async Task GivenACustomerExistsWithEmail(string email)
     {
-        var command = new RegisterCustomerCommand
-        {
-            Email = email,
-            FirstName = "Existing",
-            LastName = "Customer",
-            PhoneNumber = "1234567890"
-        };
+        var command = new RegisterCustomerCommand(Email: email, FirstName: "Existing", LastName: "Customer", PhoneNumber: "1234567890");
 
-        var response = await _testContext.HttpClient.PostAsJsonAsync("/api/users/customers", command);
+        var response = await testContext.HttpClient.PostAsJsonAsync("/api/users/customers", command);
         response.EnsureSuccessStatusCode();
     }
 
@@ -54,72 +42,42 @@ public class UserRegistrationStepDefinitions
     public async Task WhenIRegisterANewCustomerWithTheFollowingDetails(Table table)
     {
         var row = table.Rows[0];
-        _customerCommand = new RegisterCustomerCommand
-        {
-            Email = row["Email"],
-            FirstName = row["FirstName"],
-            LastName = row["LastName"],
-            PhoneNumber = row["PhoneNumber"]
-        };
+        _customerCommand = new RegisterCustomerCommand(Email: row["Email"], FirstName: row["FirstName"], LastName: row["LastName"], PhoneNumber: row["PhoneNumber"]);
 
-        _response = await _testContext.HttpClient.PostAsJsonAsync("/api/users/customers", _customerCommand);
+        _response = await testContext.HttpClient.PostAsJsonAsync("/api/users/customers", _customerCommand);
     }
 
     [When(@"I register a new rider with the following details:")]
     public async Task WhenIRegisterANewRiderWithTheFollowingDetails(Table table)
     {
         var row = table.Rows[0];
-        _riderCommand = new RegisterRiderCommand
-        {
-            Email = row["Email"],
-            FirstName = row["FirstName"],
-            LastName = row["LastName"],
-            PhoneNumber = row["PhoneNumber"]
-        };
+        _riderCommand = new RegisterRiderCommand(Email: row["Email"], FirstName: row["FirstName"], LastName: row["LastName"], PhoneNumber: row["PhoneNumber"]);
 
-        _response = await _testContext.HttpClient.PostAsJsonAsync("/api/users/riders", _riderCommand);
+        _response = await testContext.HttpClient.PostAsJsonAsync("/api/users/riders", _riderCommand);
     }
 
     [When(@"I try to register a new customer with email ""(.*)""")]
     public async Task WhenITryToRegisterANewCustomerWithEmail(string email)
     {
-        _customerCommand = new RegisterCustomerCommand
-        {
-            Email = email,
-            FirstName = "Test",
-            LastName = "User",
-            PhoneNumber = "1234567890"
-        };
+        _customerCommand = new RegisterCustomerCommand(Email: email, FirstName: "Test", LastName: "User", PhoneNumber: "1234567890");
 
-        _response = await _testContext.HttpClient.PostAsJsonAsync("/api/users/customers", _customerCommand);
+        _response = await testContext.HttpClient.PostAsJsonAsync("/api/users/customers", _customerCommand);
     }
 
     [When(@"I try to register a customer with invalid email ""(.*)""")]
     public async Task WhenITryToRegisterACustomerWithInvalidEmail(string invalidEmail)
     {
-        _customerCommand = new RegisterCustomerCommand
-        {
-            Email = invalidEmail,
-            FirstName = "Test",
-            LastName = "User",
-            PhoneNumber = "1234567890"
-        };
+        _customerCommand = new RegisterCustomerCommand(Email: invalidEmail, FirstName: "Test", LastName: "User", PhoneNumber: "1234567890");
 
-        _response = await _testContext.HttpClient.PostAsJsonAsync("/api/users/customers", _customerCommand);
+        _response = await testContext.HttpClient.PostAsJsonAsync("/api/users/customers", _customerCommand);
     }
 
     [When(@"I try to register a customer with empty first name")]
     public async Task WhenITryToRegisterACustomerWithEmptyFirstName()
     {
-        _customerCommand = new RegisterCustomerCommand
-        {
-            Email = "test@example.com",
-            FirstName = "",
-            LastName = "User",
-            PhoneNumber = "1234567890"
-        };
+        _customerCommand = new RegisterCustomerCommand(Email: "test@example.com", FirstName: "", LastName: "User", PhoneNumber: "1234567890");
 
-        _response = await _testContext.HttpClient.PostAsJsonAsync("/api/users/customers", _customerCommand);
+        _response = await testContext.HttpClient.PostAsJsonAsync("/api/users/customers", _customerCommand);
     }
 
     [Then(@"the customer should be registered successfully")]

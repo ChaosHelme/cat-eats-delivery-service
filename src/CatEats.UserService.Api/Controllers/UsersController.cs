@@ -1,24 +1,27 @@
 using CatEats.UserService.Application.Commands;
 using CatEats.UserService.Application.DTOs;
+using CatEats.UserService.Application.Queries;
+using Mediator;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatEats.UserService.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController(IUserApplicationService userService, ILogger<UsersController> logger)
+public class UsersController(IUserApplicationService userService, ILogger<UsersController> logger, IMediator mediator)
     : ControllerBase
 {
     [HttpPost("customers")]
-    public async Task<ActionResult<UserDto>> RegisterCustomer([FromBody] RegisterCustomerCommand command)
+    public async Task<ActionResult<UserDto>> RegisterCustomer([FromBody] RegisterCustomerCommand command, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await userService.RegisterCustomerAsync(command);
+            var result = await mediator.Send(command, cancellationToken);
             return CreatedAtAction(nameof(GetUser), new { id = result.Id }, result);
         }
         catch (InvalidOperationException ex)
         {
+            logger.LogInformation(ex.ToString());
             return BadRequest(new { message = ex.Message });
         }
         catch (ArgumentException ex)
@@ -28,11 +31,11 @@ public class UsersController(IUserApplicationService userService, ILogger<UsersC
     }
 
     [HttpPost("riders")]
-    public async Task<ActionResult<UserDto>> RegisterRider([FromBody] RegisterRiderCommand command)
+    public async Task<ActionResult<UserDto>> RegisterRider([FromBody] RegisterRiderCommand command, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await userService.RegisterRiderAsync(command);
+            var result = await mediator.Send(command, cancellationToken);
             return CreatedAtAction(nameof(GetUser), new { id = result.Id }, result);
         }
         catch (InvalidOperationException ex)
@@ -46,9 +49,9 @@ public class UsersController(IUserApplicationService userService, ILogger<UsersC
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<UserDto>> GetUser(Guid id)
+    public async Task<ActionResult<UserDto>> GetUser(Guid id, CancellationToken cancellationToken)
     {
-        var user = await userService.GetUserByIdAsync(id);
+        var user = await mediator.Send(new GetUserByIdQuery(id), cancellationToken);
         if (user == null)
         {
             return NotFound();
@@ -77,20 +80,20 @@ public class UsersController(IUserApplicationService userService, ILogger<UsersC
     }
 
     [HttpPost("{id:guid}/addresses")]
-    public async Task<IActionResult> AddAddress(Guid id, [FromBody] AddAddressCommand command)
+    public async Task<IActionResult> AddAddress(Guid id, [FromBody] (string street, string postalCode, string city, string country, double latitude, double longitude, bool isDefault) address)
     {
         try
         {
-            await userService.AddAddressAsync(id, command);
+            await mediator.Send(new AddAddressCommand(id, address.city, address.street, address.country,
+                address.postalCode, address.latitude, address.longitude, address.isDefault));
+
             return NoContent();
-        }
-        catch (InvalidOperationException ex)
+        } catch (InvalidOperationException ex)
         {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (ArgumentException ex)
+            return BadRequest(new {message = ex.Message});
+        } catch (ArgumentException ex)
         {
-            return BadRequest(new { message = ex.Message });
+            return BadRequest(new {message = ex.Message});
         }
     }
 
