@@ -19,7 +19,9 @@ public record User : AggregateRoot<UserId>
     private readonly List<Address> _addresses = new();
     public IReadOnlyCollection<Address> Addresses => _addresses.AsReadOnly();
 
+#pragma warning disable CS8618
     private User() { } // EF Constructor
+#pragma warning restore CS8618
 
     private User(UserId id, string email, string firstName, string lastName, 
                 string phoneNumber, UserRole role) : base(id)

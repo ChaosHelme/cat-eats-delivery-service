@@ -1,21 +1,21 @@
 using CatEats.Domain.ValueObjects;
+using CatEats.UserService.Domain.Aggregates;
 using CatEats.UserService.Infrastructure;
 using MassTransit;
-using Mediator;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace CatEats.UserService.Application.Commands.Handlers;
 
 public class AddAddressCommandHandler(IUserRepository userRepository, IPublishEndpoint publishEndpoint, IDistributedCache cache) : ICommandHandler<AddAddressCommand>
 {
-    public async ValueTask<Unit> Handle(AddAddressCommand command, CancellationToken cancellationToken)
+    public async Task Handle(AddAddressCommand command, CancellationToken cancellationToken)
     {
         var user = await userRepository.GetByIdAsync(new UserId(command.UserId), cancellationToken);
         if (user == null)
         {
             throw new InvalidOperationException($"User with ID {command.UserId} not found");
         }
-
+        
         user.AddAddress(command.Street, command.City, command.PostalCode, command.Country,
             command.Latitude, command.Longitude, command.IsDefault);
 
@@ -29,7 +29,5 @@ public class AddAddressCommandHandler(IUserRepository userRepository, IPublishEn
 
         // Clear user cache
         await cache.RemoveAsync($"user:{command.UserId}", cancellationToken);
-        
-        return Unit.Value;
     }
 }

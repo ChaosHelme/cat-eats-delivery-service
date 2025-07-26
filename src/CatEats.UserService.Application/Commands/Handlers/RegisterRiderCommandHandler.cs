@@ -2,14 +2,13 @@ using CatEats.UserService.Application.DTOs;
 using CatEats.UserService.Domain.Aggregates;
 using CatEats.UserService.Infrastructure;
 using MassTransit;
-using Mediator;
 using Microsoft.Extensions.Logging;
 
 namespace CatEats.UserService.Application.Commands.Handlers;
 
 public class RegisterRiderCommandHandler(IUserRepository userRepository, IPublishEndpoint publishEndpoint, ILogger<RegisterCustomerCommand> logger) : ICommandHandler<RegisterRiderCommand, UserDto>
 {
-    public async ValueTask<UserDto> Handle(RegisterRiderCommand command, CancellationToken cancellationToken)
+    public async Task<UserDto> Handle(RegisterRiderCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Registering rider with email {Email}", command.Email);
 

@@ -2,4 +2,4 @@ using CatEats.UserService.Application.DTOs;
 
 namespace CatEats.UserService.Application.Queries;
 
-public record GetUserByIdQuery(Guid Id) : IQuery<UserDto?>;
+public record GetAvailableRidersQuery : IQuery<IEnumerable<UserDto>>;

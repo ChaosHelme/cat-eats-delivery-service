@@ -2,17 +2,16 @@ using CatEats.UserService.Application.DTOs;
 using CatEats.UserService.Domain.Aggregates;
 using CatEats.UserService.Infrastructure;
 using MassTransit;
-using Mediator;
 using Microsoft.Extensions.Logging;
 
 namespace CatEats.UserService.Application.Commands.Handlers;
 
-public class RegisterCustomerCommandHandler(IUserRepository userRepository,
+public class RegisterCustomerCommandHandler(
+    IUserRepository userRepository,
     IPublishEndpoint publishEndpoint,
-    ILogger<RegisterCustomerCommand> logger)
-    : ICommandHandler<RegisterCustomerCommand, UserDto>
+    ILogger<RegisterCustomerCommand> logger) : ICommandHandler<RegisterCustomerCommand, UserDto>
 {
-    public async ValueTask<UserDto> Handle(RegisterCustomerCommand command, CancellationToken cancellationToken)
+    public async Task<UserDto> Handle(RegisterCustomerCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Registering customer with email {Email}", command.Email);
 
@@ -32,7 +31,7 @@ public class RegisterCustomerCommandHandler(IUserRepository userRepository,
         }
 
         logger.LogInformation("Customer registered successfully with ID {UserId}", user.Id);
-
+        
         return UserDto.FromDomain(user);
     }
 }

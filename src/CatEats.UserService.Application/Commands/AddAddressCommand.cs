@@ -1,5 +1,3 @@
-using Mediator;
-
 namespace CatEats.UserService.Application.Commands;
 
 public record AddAddressCommand(

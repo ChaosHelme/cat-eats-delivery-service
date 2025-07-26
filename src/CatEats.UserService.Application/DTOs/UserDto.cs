@@ -9,13 +9,13 @@ public record UserDto
     public string Email { get; init; } = string.Empty;
     public string FirstName { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;
-    public string PhoneNumber { get; init; } = string.Empty;
+    public string? PhoneNumber { get; init; } = string.Empty;
     public UserRole Role { get; init; }
     public UserStatus Status { get; init; }
     public DateTime CreatedAt { get; init; }
     public DateTime? LastLoginAt { get; init; }
     public List<AddressDto> Addresses { get; init; } = [];
-
+    
     public static UserDto FromDomain(User user)
     {
         return new UserDto

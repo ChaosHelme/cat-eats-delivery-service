@@ -1,5 +1,4 @@
 using CatEats.UserService.Application.DTOs;
-using Mediator;
 
 namespace CatEats.UserService.Application.Commands;
 

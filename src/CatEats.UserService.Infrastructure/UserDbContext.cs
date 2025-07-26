@@ -1,19 +1,19 @@
 using CatEats.Domain.ValueObjects;
-using CatEats.UserService.Infrastructure.Persistence;
+using CatEats.UserService.Domain.Aggregates;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatEats.UserService.Infrastructure;
 
 public class UserDbContext(DbContextOptions<UserDbContext> options) : DbContext(options)
 {
-    public DbSet<UserEntity> Users => Set<UserEntity>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         // User configuration
-        modelBuilder.Entity<UserEntity>(entity =>
+        modelBuilder.Entity<User>(entity =>
         {
             entity.ToTable("users");
             

@@ -25,4 +25,18 @@ public record AddressDto
             IsDefault = address.IsDefault
         };
     }
+
+    public static AddressDto FromEntity(Address arg)
+    {
+        return new AddressDto
+        {
+            Street = arg.Street,
+            City = arg.City,
+            PostalCode = arg.PostalCode,
+            Country = arg.Country,
+            Latitude = arg.Latitude,
+            Longitude = arg.Longitude,
+            IsDefault = arg.IsDefault
+        };
+    }
 }

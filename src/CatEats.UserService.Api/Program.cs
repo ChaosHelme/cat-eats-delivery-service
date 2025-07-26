@@ -1,4 +1,5 @@
-using CatEats.UserService.Application;
+using CatEats.UserService.Api.Extensions;
+using CatEats.UserService.Application.Commands.Handlers;
 using CatEats.UserService.Infrastructure;
 using MassTransit;
 
@@ -6,7 +7,7 @@ namespace CatEats.UserService.Api;
 
 partial class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +19,8 @@ partial class Program
         // Add repositories
         builder.Services.AddScoped<IUserRepository, UserEfCoreRepository>();
         
-        // Add application services
-        builder.Services.AddScoped<IUserApplicationService, UserApplicationService>();
+        // Add Command and Query Handlers
+        builder.Services.AddHandlersFromAssembly(typeof(RegisterCustomerCommandHandler).Assembly);
 
         // Add MassTransit for messaging
         builder.Services.AddMassTransit(x =>
@@ -30,13 +31,8 @@ partial class Program
                 cfg.ConfigureEndpoints(context);
             });
         });
-
-        builder.Services.AddMediator(cfg =>
-        {
-            cfg.AddConsumers(typeof(UserApplicationService).Assembly);
-        });
         
-        builder.Services.AddAutoMapper(_ => {}, typeof(UserApplicationService).Assembly);
+        //builder.Services.AddAutoMapper(_ => {}, typeof(UserApplicationService).Assembly);
 
         // Add Redis caching
         builder.AddRedisClient("redis");
@@ -69,9 +65,9 @@ partial class Program
         app.MapControllers();
 
         // Apply database migrations
-        //await app.Services.MigrateDbContextAsync<UserDbContext>();
+        await app.Services.MigrateDbContextAsync<UserDbContext>();
 
-        app.Run();
+        await app.RunAsync();
     }
 }
 
