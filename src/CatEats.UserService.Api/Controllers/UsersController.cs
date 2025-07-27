@@ -22,7 +22,6 @@ public class UsersController(ILogger<UsersController> logger) : ControllerBase
             return CreatedAtAction(nameof(GetUser), new {id = result.Id}, result);
         } catch (InvalidOperationException ex)
         {
-            logger.LogInformation(ex.ToString());
             return BadRequest(new {message = ex.Message});
         } catch (ArgumentException ex)
         {

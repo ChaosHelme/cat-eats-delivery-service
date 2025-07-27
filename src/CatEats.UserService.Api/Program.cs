@@ -65,7 +65,7 @@ partial class Program
         app.MapControllers();
 
         // Apply database migrations
-        await app.Services.MigrateDbContextAsync<UserDbContext>();
+        //await app.Services.MigrateDbContextAsync<UserDbContext>();
 
         await app.RunAsync();
     }
