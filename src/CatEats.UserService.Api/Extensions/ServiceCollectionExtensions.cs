@@ -9,17 +9,21 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddHandlersFromAssembly(this IServiceCollection services, Assembly assembly)
     {
-        var commandHandlerTypes = assembly.GetTypes()
-            .Where(t => t.GetCustomAttribute<CommandHandlerAttribute>() != null)
-            .Select(t => t.GetCustomAttribute<CommandHandlerAttribute>()!.HandlerType)
-            .ToList();
+        var types  = assembly.GetTypes();
         
-        var queryHandlerTypes = assembly.GetTypes()
-            .Where(t => t.GetCustomAttribute<QueryHandlerAttribute>() != null)
-            .Select(t => t.GetCustomAttribute<QueryHandlerAttribute>()!.HandlerType)
+        var commandHandlerTypes = types
+            .Select(t => t.GetCustomAttribute<CommandHandlerAttribute>())
+            .Where(arg => arg != null)
+            .Cast<CommandHandlerAttribute>()
             .ToList();
 
-        foreach (var type in commandHandlerTypes)
+        var queryHandlerTypes = types
+            .Select(t => t.GetCustomAttribute<QueryHandlerAttribute>())
+            .Where(arg => arg != null)
+            .Cast<QueryHandlerAttribute>()
+            .ToList();
+
+        foreach (var type in commandHandlerTypes.Select(t => t.HandlerType))
         {
             if (!type.IsClass || type.IsAbstract)
                 throw new InvalidOperationException($"Type {type.FullName} marked with [CommandHandler] must be a non-abstract class.");
@@ -40,7 +44,7 @@ public static class ServiceCollectionExtensions
             }
         }
 
-        foreach (var type in queryHandlerTypes)
+        foreach (var type in queryHandlerTypes.Select(t => t.HandlerType))
         {
             if (!type.IsClass || type.IsAbstract)
                 throw new InvalidOperationException($"Type {type.FullName} marked with [QueryHandler] must be a non-abstract class.");
